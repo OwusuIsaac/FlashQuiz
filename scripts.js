@@ -1,4 +1,4 @@
-// main.js
+// sample card js
 const flashcards = [
   {
     question: "What is the main purpose of photosynthesis?",
