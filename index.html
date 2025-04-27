@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FlashQuiz – Home</title>
+  <title>FlashQuiz – Login</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,41 +11,27 @@
   <header>
     <h1>FlashQuiz</h1>
     <nav>
-      <a href="index.html" class="active">Home</a>
-      <a href="progress.html">Progress</a>
+      <a href="index.html" class="active">Login</a>
       <a href="signup.html">Sign Up</a>
-      <a href="#">Login</a>
     </nav>
   </header>
 
   <main class="centered-container">
     <section class="form-box">
-      <h2>Generate Your Flashcard Quiz</h2>
-      <form action="quiz.html" method="GET">
-        <label for="topic">Topic</label>
-        <input type="text" id="topic" name="topic" placeholder="e.g. Photosynthesis" required />
+      <h2>Login to Your Account</h2>
+      <form action="login.py" method="post">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required />
 
-        <label for="context">Context (optional)</label>
-        <textarea id="context" name="context" placeholder="What should the quiz focus on?"></textarea>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
 
-        <label for="difficulty">Difficulty</label>
-        <select id="difficulty" name="difficulty">
-          <option value="easy">Easy</option>
-          <option value="medium" selected>Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-
-        <label for="format">Question Format</label>
-        <select id="format" name="format">
-          <option value="mcq">Multiple Choice</option>
-          <option value="short_answer">Short Answer</option>
-        </select>
-
-        <label for="numQuestions">Number of Questions</label>
-        <input type="number" id="numQuestions" name="numQuestions" min="1" max="20" value="5" />
-
-        <button type="submit">Start Quiz</button>
+        <button type="submit">Login</button>
       </form>
+      <p style="margin-top: 1rem; text-align: center;">
+        Don't have an account? <br/>
+        <a href="signup.html" style="color: #2a9d8f; font-weight: bold;">Sign Up</a>
+      </p>
     </section>
   </main>
 
@@ -53,6 +39,5 @@
     <p>&copy; 2025 FlashQuiz</p>
   </footer>
 
-  <script src="scripts.js"></script>
 </body>
 </html>
