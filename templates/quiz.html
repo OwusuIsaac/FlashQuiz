@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlashQuiz – Quiz</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+
+  <header>
+    <h1>FlashQuiz</h1>
+    <nav>
+      <a href="{{ url_for('home') }}" class="active">Home</a>
+      <a href="{{ url_for('progress') }}">Progress</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="quiz-container">
+      <div id="quiz-box">
+        <h2 id="question">Loading...</h2>
+        <ul id="options" class="option-list"></ul>
+      </div>
+
+      <div class="quiz-controls">
+        <button id="next-btn" disabled>Next</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 FlashQuiz</p>
+  </footer>
+
+  <script>
+    // Injected quiz data from server
+    const quizData = {{ quiz_data | tojson | safe }};
+    let current = 0;
+    const userAnswers = [];
+    let score = 0;
+    const missed = [];
+
+    function showQuestion(i) {
+      const q = quizData.questions[i];
+      document.getElementById('question').textContent = q.question;
+      const opts = document.getElementById('options');
+      opts.innerHTML = '';
+
+      if (q.options.length) {
+        q.options.forEach(opt => {
+          const li = document.createElement('li');
+          li.textContent = opt;
+          li.className = 'option';
+          li.onclick = () => selectOption(li);
+          opts.appendChild(li);
+        });
+        // disable Next until selection
+        document.getElementById('next-btn').disabled = true;
+      } else {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'short-answer';
+        opts.appendChild(input);
+        document.getElementById('next-btn').disabled = false;
+      }
+    }
+
+    function selectOption(li) {
+      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      li.classList.add('selected');
+      document.getElementById('next-btn').disabled = false;
+    }
+
+    document.getElementById('next-btn').onclick = () => {
+      const q = quizData.questions[current];
+      let userAns;
+      if (q.options.length) {
+        const sel = document.querySelector('.option.selected');
+        userAns = sel ? sel.textContent : '';
+      } else {
+        userAns = document.getElementById('short-answer').value.trim();
+      }
+      userAnswers.push(userAns);
+
+      if (userAns.toLowerCase() !== q.answer.toLowerCase()) {
+        missed.push({ question: q.question, answer: q.answer });
+      } else {
+        score++;
+      }
+
+      current++;
+      document.getElementById('next-btn').disabled = true;
+
+      if (current < quizData.questions.length) {
+        showQuestion(current);
+      } else {
+        // Submit all answers to Flask for consistency
+        fetch('{{ url_for("results") }}', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers: userAnswers })
+        })
+        .then(res => res.json())
+        .then(data => {
+          sessionStorage.setItem('score', data.score);
+          sessionStorage.setItem('total', data.total);
+          sessionStorage.setItem('missed', JSON.stringify(data.missed));
+          window.location.href = '{{ url_for("results") }}';
+        })
+        .catch(err => console.error('Error posting results:', err));
+      }
+    };
+
+    // Kick things off
+    showQuestion(0);
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!-- templates/results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FlashQuiz – Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+
+  <header>
+    <h1>FlashQuiz</h1>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('progress') }}">Progress</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="quiz-container">
+      <h2>Your Results</h2>
+      <p id="score-summary">You scored {{ score }} out of {{ total }}</p>
+
+      <div id="missed-section">
+        <h3>Questions You Missed:</h3>
+        <ul id="missed-list">
+          {% for card in missed %}
+            <li><strong>Q:</strong> {{ card.question }}<br><strong>A:</strong> {{ card.answer }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="quiz-controls">
+        <button onclick="window.location.href='{{ url_for('quiz') }}'">Retry Quiz</button>
+        <button onclick="window.location.href='{{ url_for('home') }}'">Go to Homepage</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 FlashQuiz</p>
+  </footer>
+
+</body>
+</html>
+
+
+
