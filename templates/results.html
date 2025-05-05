@@ -1,9 +1,8 @@
-<!-- templates/results.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FlashQuiz – Results</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 </head>
@@ -19,23 +18,25 @@
   </header>
 
   <main>
-    <section class="quiz-container">
-      <h2>Your Results</h2>
-      <p id="score-summary">You scored {{ score }} out of {{ total }}</p>
+    <section class="results-container">
+      <h2>Quiz Results</h2>
+      <p><strong>Score:</strong> {{ score }} / {{ total }}</p>
 
-      <div id="missed-section">
-        <h3>Questions You Missed:</h3>
-        <ul id="missed-list">
-          {% for card in missed %}
-            <li><strong>Q:</strong> {{ card.question }}<br><strong>A:</strong> {{ card.answer }}</li>
+      {% if missed %}
+      <div class="missed-section">
+        <h3>Review Missed Questions</h3>
+        <ul>
+          {% for item in missed %}
+          <li>
+            <strong>Q:</strong> {{ item.question }}<br />
+            <strong>Correct Answer:</strong> {{ item.answer }}
+          </li>
           {% endfor %}
         </ul>
       </div>
-
-      <div class="quiz-controls">
-        <button onclick="window.location.href='{{ url_for('quiz') }}'">Retry Quiz</button>
-        <button onclick="window.location.href='{{ url_for('home') }}'">Go to Homepage</button>
-      </div>
+      {% else %}
+      <p class="congrats">🎉 Great job! You got all questions right!</p>
+      {% endif %}
     </section>
   </main>
 
@@ -45,6 +46,3 @@
 
 </body>
 </html>
-
-
-

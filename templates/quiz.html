@@ -35,12 +35,9 @@
   </footer>
 
   <script>
-    // Injected quiz data from server
     const quizData = {{ quiz_data | tojson | safe }};
     let current = 0;
     const userAnswers = [];
-    let score = 0;
-    const missed = [];
 
     function showQuestion(i) {
       const q = quizData.questions[i];
@@ -56,12 +53,12 @@
           li.onclick = () => selectOption(li);
           opts.appendChild(li);
         });
-        // disable Next until selection
         document.getElementById('next-btn').disabled = true;
       } else {
         const input = document.createElement('input');
         input.type = 'text';
         input.id = 'short-answer';
+        input.placeholder = 'Type your answer';
         opts.appendChild(input);
         document.getElementById('next-btn').disabled = false;
       }
@@ -76,27 +73,22 @@
     document.getElementById('next-btn').onclick = () => {
       const q = quizData.questions[current];
       let userAns;
+
       if (q.options.length) {
         const sel = document.querySelector('.option.selected');
         userAns = sel ? sel.textContent : '';
       } else {
         userAns = document.getElementById('short-answer').value.trim();
       }
+
       userAnswers.push(userAns);
-
-      if (userAns.toLowerCase() !== q.answer.toLowerCase()) {
-        missed.push({ question: q.question, answer: q.answer });
-      } else {
-        score++;
-      }
-
       current++;
       document.getElementById('next-btn').disabled = true;
 
       if (current < quizData.questions.length) {
         showQuestion(current);
       } else {
-        // Submit all answers to Flask for consistency
+        // Submit answers to backend
         fetch('{{ url_for("results") }}', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -104,16 +96,19 @@
         })
         .then(res => res.json())
         .then(data => {
-          sessionStorage.setItem('score', data.score);
-          sessionStorage.setItem('total', data.total);
-          sessionStorage.setItem('missed', JSON.stringify(data.missed));
-          window.location.href = '{{ url_for("results") }}';
+          if (data.success) {
+            window.location.href = '{{ url_for("results") }}';
+          } else {
+            alert('Error saving results.');
+          }
         })
-        .catch(err => console.error('Error posting results:', err));
+        .catch(err => {
+          console.error('Error posting results:', err);
+          alert('Failed to submit quiz.');
+        });
       }
     };
 
-    // Kick things off
     showQuestion(0);
   </script>
 </body>

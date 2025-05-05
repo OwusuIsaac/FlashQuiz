@@ -91,10 +91,8 @@ def home():
         )
 
         raw = resp.text.strip()
-        # strip fences
         if raw.startswith("```"):
             raw = raw.split("```",2)[1].strip()
-        # extract JSON
         start = raw.find("{")
         end   = raw.rfind("}") + 1
         json_blob = raw[start:end]
@@ -106,14 +104,11 @@ def home():
             return render_template('home.html',
                                    error='Failed to parse AI response; check server logs.')
 
-        # everything’s good
         session['quiz_data'] = quiz_data
         session['topic'] = topic
         return redirect(url_for('quiz'))
 
     return render_template('home.html')
-
-       
 
 @app.route('/quiz')
 def quiz():
@@ -125,27 +120,41 @@ def quiz():
 def results():
     if 'username' not in session or 'quiz_data' not in session:
         return redirect(url_for('home'))
+
     if request.method == 'POST':
         data = request.get_json()
         quiz_data = session['quiz_data']
         questions = quiz_data.get('questions', [])
         score = 0
         missed = []
-        print("data: ", data)
-        print("q: ", questions)
+
         for i, q in enumerate(questions):
             ans = data['answers'][i].strip().lower()
             if ans == q['answer'].strip().lower():
                 score += 1
             else:
                 missed.append({'question': q['question'], 'answer': q['answer']})
-        # Save to session progress
+
+        session['last_score'] = score
+        session['last_total'] = len(questions)
+        session['last_missed'] = missed
+
         prog = session.get('progress', [])
-        prog.append({'date': __import__('datetime').date.today().isoformat(), 'topic': session.get('topic',''), 'score': score, 'total': len(questions)})
+        prog.append({
+            'date': __import__('datetime').date.today().isoformat(),
+            'topic': session.get('topic',''),
+            'score': score,
+            'total': len(questions)
+        })
         session['progress'] = prog
-        return jsonify({'score': score, 'total': len(questions), 'missed': missed})
-    # GET use client-side sessionStorage fallback
-    return render_template('results.html')
+
+        return jsonify({'success': True, 'score': score, 'total': len(questions), 'missed': missed})
+
+
+    return render_template('results.html',
+                           score=session.get('last_score', 0),
+                           total=session.get('last_total', 0),
+                           missed=session.get('last_missed', []))
 
 @app.route('/progress')
 def progress():
