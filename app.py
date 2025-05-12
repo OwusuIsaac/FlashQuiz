@@ -28,6 +28,7 @@ def load_users():
             except: return []
     return []
 
+
 def save_users(users):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(users, f, indent=2)

@@ -35,8 +35,17 @@
         </ul>
       </div>
       {% else %}
-      <p class="congrats">🎉 Great job! You got all questions right!</p>
+      <p class="congrats"> Great job! You got all questions right!</p>
       {% endif %}
+
+      <div class="results-buttons">
+        <form action="{{ url_for('quiz') }}" method="get" style="display:inline;">
+          <button type="submit">Retry Quiz</button>
+        </form>
+        <form action="{{ url_for('home') }}" method="get" style="display:inline;">
+          <button type="submit">Go Home</button>
+        </form>
+      </div>
     </section>
   </main>
 

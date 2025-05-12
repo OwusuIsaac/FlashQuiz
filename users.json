@@ -7,6 +7,47 @@
   {
     "username": "io2050",
     "email": "io2050@nyu.edu",
-    "password": "Knowledge@1643"
+    "password": "Knowledge@1643",
+    "progress": [
+      {
+        "date": "2025-05-07",
+        "topic": "Digestion",
+        "score": 0,
+        "total": 1
+      },
+      {
+        "date": "2025-05-07",
+        "topic": "Digestion",
+        "score": 1,
+        "total": 1
+      },
+      {
+        "date": "2025-05-07",
+        "topic": "Digestion",
+        "score": 0,
+        "total": 3
+      },
+      {
+        "date": "2025-05-07",
+        "topic": "Digestion",
+        "score": 0,
+        "total": 3
+      }
+    ]
+  },
+  {
+    "username": "isaac16",
+    "email": "kg56@nyu.edu",
+    "password": "login"
+  },
+  {
+    "username": "io2050",
+    "email": "io2050@nyu.edu",
+    "password": "Knowledge@16453"
+  },
+  {
+    "username": "io2050",
+    "email": "kg56@nyu.edu",
+    "password": "login"
   }
 ]
