@@ -46,7 +46,7 @@ flashquiz/
     └── results.html
 
 ### 5, add the api key to your .env file 
-GEMINI_API_KEY=your_actual_gemini_api_key_here
+GEMINI_API_KEY=AIzaSyAfQuBfJJPaZG567UrNYoJKxGU-bUZpE4k
 
 ### 6. Run application
 export FLASK_APP=app.py
